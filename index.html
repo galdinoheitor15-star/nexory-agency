@@ -5,14 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Zunkuft Digital Intelligence · Agentes de IA, automação e sistemas sob medida</title>
 <meta name="description" content="A Zunkuft cria agentes de IA, automações, sistemas de gestão inteligente, sites e landing pages sob medida. Orçamento no mesmo dia pelo WhatsApp e teste de 7 dias.">
-<meta name="theme-color" content="#0131CD">
+<meta name="theme-color" content="#021024">
 <meta property="og:title" content="Zunkuft Digital Intelligence">
 <meta property="og:description" content="Agentes de IA, automações e sistemas sob medida. Orçamento no mesmo dia pelo WhatsApp e teste de 7 dias.">
 <meta property="og:type" content="website">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23B9FC01'/%3E%3Cpath d='M9 10h14L9 22h14' stroke='%230131CD' stroke-width='3.2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23021024'/%3E%3Ccircle cx='18' cy='16' r='7' fill='none' stroke='%23C1E8FF' stroke-width='2.6'/%3E%3Cpath d='M5 16h6' stroke='%23C1E8FF' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="assets/style.css">
 <script>document.documentElement.classList.add("js")</script>
 <script src="assets/config.js" defer></script>
@@ -23,123 +23,141 @@
 <div class="progress" aria-hidden="true"></div>
 
 <header class="top">
-  <div class="container">
+  <div class="nav-bar">
     <a class="brand" href="index.html" aria-label="Zunkuft Digital Intelligence, início">
-      <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#B9FC01"/><path d="M9 10h14L9 22h14" stroke="#0131CD" stroke-width="3.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span class="brand-mark" aria-hidden="true"></span>
       <span><b>zunkuft</b><small>Digital Intelligence</small></span>
     </a>
     <nav class="nav" aria-label="Principal">
+      <a href="#demo">Como atende</a>
       <a href="#solucoes">Soluções</a>
       <a href="#como-funciona">Como funciona</a>
       <a href="#teste">Teste de 7 dias</a>
       <a href="pacotes.html">Pacotes</a>
     </nav>
-    <a class="btn btn-lime" href="#aplicar" data-aplicar>Pedir orçamento</a>
+    <div class="top-actions">
+      <a class="btn btn-ghost" href="#" data-wa="Olá! Vim pelo site da Zunkuft.">WhatsApp</a>
+      <a class="btn btn-light" href="#aplicar" data-aplicar>Pedir orçamento</a>
+    </div>
   </div>
 </header>
 
 <main id="conteudo">
 
-<section class="hero sec-blue">
-  <div class="glow g1" aria-hidden="true"></div>
-  <div class="glow g2" aria-hidden="true"></div>
-  <div class="container">
-    <div class="hero-copy">
-      <p class="eyebrow rise" style="--d:.05s">Agentes de IA · Automação · Sistemas de gestão</p>
-      <h1><span class="w"><span style="--i:0">Sua</span></span> <span class="w"><span style="--i:1">empresa</span></span> <span class="w"><span style="--i:2">ainda</span></span> <span class="w"><span style="--i:3">responde</span></span> <span class="w"><span style="--i:4">cliente</span></span> <span class="w"><span style="--i:5">no</span></span> <span class="w"><span style="--i:6">WhatsApp</span></span> <span class="mark"><span class="w"><span style="--i:7">na</span></span> <span class="w"><span style="--i:8">mão?</span></span></span></h1>
-      <p class="lead rise" style="--d:.75s">A Zunkuft cria agentes de IA, automações e sistemas de gestão sob medida. Seu atendimento responde em segundos, 24 horas por dia, e sua equipe volta a fazer o que dá dinheiro.</p>
-      <div class="cta-row rise" style="--d:.9s">
-        <a class="btn btn-lime" href="#aplicar" data-aplicar>Quero meu orçamento <span class="arr" aria-hidden="true">→</span></a>
-        <a class="btn btn-light" href="#custo">Quanto o trabalho manual me custa?</a>
-      </div>
-      <div class="proof rise" style="--d:1.05s"><span>Sem reunião</span><span>Orçamento no mesmo dia</span><span>Teste de 7 dias</span></div>
+<section class="hero" id="topo">
+  <canvas id="gl" aria-hidden="true"></canvas>
+  <div class="hero-scrim" aria-hidden="true"></div>
+  <div class="container hero-inner">
+    <p class="kicker intro" style="--d:.4s">Agentes de IA · Automação · Sistemas inteligentes</p>
+    <h1 class="hero-title"><span class="w"><span style="--i:0">Sua</span></span> <span class="w"><span style="--i:1">empresa</span></span> <span class="w"><span style="--i:2">ainda</span></span> <span class="w"><span style="--i:3">responde</span></span> <span class="w"><span style="--i:4">cliente</span></span> <span class="w"><span style="--i:5">no</span></span> <span class="w"><span style="--i:6">WhatsApp</span></span> <em><span class="w"><span style="--i:7">na</span></span> <span class="w"><span style="--i:8">mão?</span></span></em></h1>
+    <p class="lead intro" style="--d:1.5s">A Zunkuft cria agentes de IA, automações e sistemas sob medida. Seu atendimento responde em segundos, 24 horas por dia, e sua equipe volta a fazer o que dá dinheiro.</p>
+    <div class="cta-row intro" style="--d:1.7s">
+      <a class="btn btn-primary" href="#aplicar" data-aplicar>Quero meu orçamento <span class="arr" aria-hidden="true">→</span></a>
+      <a class="btn btn-ghost" href="#demo">Ver um agente atendendo</a>
     </div>
+    <div class="proof intro" style="--d:1.9s"><span>Sem reunião</span><span>Orçamento no mesmo dia</span><span>Teste de 7 dias</span></div>
+  </div>
+  <a class="scroll-cue intro" style="--d:2.3s" href="#demo" aria-label="Rolar para a demonstração">Role<i aria-hidden="true"></i></a>
+</section>
 
-    <div class="phone-wrap rise" style="--d:.45s">
-      <div class="phone" role="img" aria-label="Demonstração: um agente de IA atende uma paciente às 23h04 e agenda uma consulta em 41 segundos.">
-        <div class="screen">
-          <div class="chat-head">
-            <div class="avatar" aria-hidden="true">CV</div>
-            <div><b>Clínica Vida</b><small>online · atendimento com IA</small></div>
+<div class="marquee" aria-hidden="true">
+  <div class="track">
+    <span>Agentes de IA</span><span>Automação de processos</span><span>Sistemas de gestão</span><span>Sites institucionais</span><span>Landing pages</span><span>Chatbots</span><span>Integrações e APIs</span><span>E-commerce</span>
+    <span>Agentes de IA</span><span>Automação de processos</span><span>Sistemas de gestão</span><span>Sites institucionais</span><span>Landing pages</span><span>Chatbots</span><span>Integrações e APIs</span><span>E-commerce</span>
+  </div>
+  <div class="track rev">
+    <span>Análise de dados</span><span>Aplicativos</span><span>Consultoria em IA</span><span>Sistemas web</span><span>Digitalização</span><span>IA personalizada</span><span>Orçamento no mesmo dia</span><span>Teste de 7 dias</span>
+    <span>Análise de dados</span><span>Aplicativos</span><span>Consultoria em IA</span><span>Sistemas web</span><span>Digitalização</span><span>IA personalizada</span><span>Orçamento no mesmo dia</span><span>Teste de 7 dias</span>
+  </div>
+</div>
+
+<section class="demo" id="demo">
+  <div class="container">
+    <div class="demo-copy reveal">
+      <p class="kicker">Demonstração</p>
+      <h2 class="grad">São 23h04. Seu cliente chamou. O agente respondeu.</h2>
+      <p class="lead">Um agente de IA da Zunkuft atende com o jeito de falar da sua empresa, tira dúvidas e marca horário sozinho, a qualquer hora.</p>
+      <ul class="ticks">
+        <li><span><b>Responde em segundos</b>, de dia, de noite e no fim de semana.</span></li>
+        <li><span><b>Agenda e qualifica</b> sem ninguém da equipe parar o que está fazendo.</span></li>
+        <li><span><b>Passa para uma pessoa</b> quando o assunto pede atendimento humano.</span></li>
+      </ul>
+    </div>
+    <div class="stage" id="stage">
+      <div class="phone3d" id="phone3d">
+        <div class="phone" role="img" aria-label="Demonstração: um agente de IA atende uma paciente às 23h04 e agenda uma consulta em 41 segundos.">
+          <div class="screen">
+            <div class="chat-head">
+              <div class="avatar" aria-hidden="true">CV</div>
+              <div><b>Clínica Vida</b><small>online · atendimento com IA</small></div>
+            </div>
+            <div class="chat-body" id="chat" aria-hidden="true"></div>
           </div>
-          <div class="chat-body" id="chat" aria-hidden="true"></div>
         </div>
+        <div class="chip3d c1" aria-hidden="true"><div><b>41 s</b>para agendar</div></div>
+        <div class="chip3d c2" aria-hidden="true"><div><b>24 h</b>atendendo</div></div>
+        <div class="chip3d c3" aria-hidden="true"><div><b>0</b>clientes esperando</div></div>
       </div>
-      <p class="demo-note">Demonstração de um agente de IA da Zunkuft</p>
     </div>
   </div>
 </section>
 
-<div class="marquee-wrap" aria-hidden="true">
-  <div class="marquee">
-    <div class="track">
-      <span>Agentes de IA</span><span>Automação de processos</span><span>Sistemas de gestão</span><span>Sites</span><span>Landing pages</span><span>Soluções com IA</span><span>Orçamento no mesmo dia</span><span>Teste de 7 dias</span>
-      <span>Agentes de IA</span><span>Automação de processos</span><span>Sistemas de gestão</span><span>Sites</span><span>Landing pages</span><span>Soluções com IA</span><span>Orçamento no mesmo dia</span><span>Teste de 7 dias</span>
-    </div>
-  </div>
-</div>
-
 <section id="solucoes">
   <div class="container">
     <div class="sec-head reveal">
-      <p class="eyebrow">O que fazemos</p>
-      <h2>Tecnologia que trabalha enquanto sua equipe vende</h2>
+      <p class="kicker">O que fazemos</p>
+      <h2 class="grad">Tecnologia que trabalha enquanto sua equipe vende</h2>
       <p class="lead">Atendemos empresas de todos os setores. Cada projeto é feito para a sua operação, sem modelo pronto que você precisa adaptar.</p>
     </div>
     <div class="sol" data-stagger>
-      <article class="card feature">
-        <span class="go" aria-hidden="true">↗</span>
-        <div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9.5h8M8 12.5h5"/></svg></div>
+      <article class="card feature" data-tilt>
+        <div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9.5h8M8 12.5h5"/></svg></div>
         <span class="tag">WhatsApp · Instagram · Site</span>
-        <h3>Agentes de IA</h3>
+        <h3>Agentes de IA e chatbots</h3>
         <p>Atendem, tiram dúvidas, qualificam e agendam, a qualquer hora, com o jeito de falar da sua empresa. Quando precisa de uma pessoa, passam a conversa para a sua equipe.</p>
         <div class="chips"><span>Atende 24h</span><span>Agenda horários</span><span>Qualifica clientes</span></div>
       </article>
-      <article class="card">
-        <span class="go" aria-hidden="true">↗</span>
-        <div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.5 6H15a3 3 0 0 1 3 3v6.5"/><path d="M15.5 13l2.5 2.5 2.5-2.5"/></svg></div>
-        <span class="tag">Planilhas · Pedidos · Relatórios</span>
+      <article class="card" data-tilt>
+        <div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.5 6H15a3 3 0 0 1 3 3v6.5"/><path d="M15.5 13l2.5 2.5 2.5-2.5"/></svg></div>
+        <span class="tag">Processos · Integrações · APIs</span>
         <h3>Automação de processos</h3>
-        <p>O que sua equipe repete todo dia passa a acontecer sozinho, sem erro e sem retrabalho.</p>
+        <p>O que sua equipe repete todo dia passa a acontecer sozinho, com seus sistemas conversando entre si.</p>
       </article>
-      <article class="card">
-        <span class="go" aria-hidden="true">↗</span>
-        <div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18"/><path d="M6 20v-7M11 20V5M16 20v-9M20 20v-4"/></svg></div>
-        <span class="tag">Painel · Estoque · Financeiro</span>
+      <article class="card" data-tilt>
+        <div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18"/><path d="M6 20v-7M11 20V5M16 20v-9M20 20v-4"/></svg></div>
+        <span class="tag">Gestão · Dados · Relatórios</span>
         <h3>Sistemas de gestão inteligente</h3>
-        <p>Os números da empresa num só lugar, em tempo real, com a IA apontando o que precisa de atenção.</p>
+        <p>Os números da empresa num só painel, em tempo real, com a IA apontando o que precisa de atenção.</p>
       </article>
-      <article class="card">
-        <span class="go" aria-hidden="true">↗</span>
-        <div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M3 9h18"/><path d="M6.5 6.5h.01M9 6.5h.01"/></svg></div>
-        <span class="tag">Rápidos · Feitos para vender</span>
-        <h3>Sites</h3>
-        <p>Sites que carregam rápido, aparecem no Google e levam o visitante direto para o seu WhatsApp.</p>
+      <article class="card" data-tilt>
+        <div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M3 9h18"/><path d="M6.5 6.5h.01M9 6.5h.01"/></svg></div>
+        <span class="tag">Sites · Landing pages · E-commerce</span>
+        <h3>Presença que vende</h3>
+        <p>Sites, landing pages e lojas virtuais rápidas, que aparecem no Google e levam o visitante direto para a compra.</p>
       </article>
-      <article class="card">
-        <span class="go" aria-hidden="true">↗</span>
-        <div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M9 8h6M9 12h6M9 16h3"/></svg></div>
-        <span class="tag">Campanhas · Lançamentos</span>
-        <h3>Landing pages</h3>
-        <p>Páginas de uma oferta só, prontas para receber anúncio e transformar clique em contato.</p>
+      <article class="card" data-tilt>
+        <div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M10.5 18.5h3"/></svg></div>
+        <span class="tag">Aplicativos · Sistemas web</span>
+        <h3>Aplicações sob medida</h3>
+        <p>Aplicativos e sistemas web feitos para o seu processo, do jeito que a sua equipe trabalha.</p>
       </article>
-      <article class="card wide">
-        <div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.6L19.5 10.5l-5.6 1.9L12 18l-1.9-5.6L4.5 10.5l5.6-1.9z"/><path d="M19 17l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/></svg></div>
-        <div><span class="tag">Sob medida</span><h3>Soluções com IA</h3><p>Precisa de algo que não existe pronto? A gente entende o problema e constrói a solução.</p></div>
+      <article class="card wide" data-tilt>
+        <div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.6L19.5 10.5l-5.6 1.9L12 18l-1.9-5.6L4.5 10.5l5.6-1.9z"/><path d="M19 17l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/></svg></div>
+        <div><span class="tag">IA personalizada · Consultoria</span><h3>Soluções de IA para o que ainda não existe</h3><p class="muted">Precisa de algo que não está pronto em lugar nenhum? A gente entende o problema, orienta o caminho e constrói a solução.</p></div>
         <a class="btn btn-primary" href="#aplicar" data-aplicar>Contar o que preciso <span class="arr" aria-hidden="true">→</span></a>
       </article>
     </div>
   </div>
 </section>
 
-<section class="sec-paper" id="custo">
+<section id="custo">
   <div class="container custo">
     <div class="custo-copy reveal">
-      <p class="eyebrow">Faça a conta</p>
-      <h2>Quanto o trabalho manual custa para a sua empresa?</h2>
+      <p class="kicker">Faça a conta</p>
+      <h2 class="grad">Quanto o trabalho manual custa para a sua empresa?</h2>
       <p class="lead">Responder cliente, montar planilha, lançar pedido. Ajuste os números e veja quanto isso custa por mês. É esse valor que um agente de IA ou uma automação devolve para você.</p>
     </div>
-    <div class="calc reveal" id="calc" style="--d:.12s">
+    <div class="calc reveal" id="calc" style="--d:.15s">
       <div class="field">
         <div class="field-top"><label for="calc-pessoas">Pessoas fazendo tarefas repetitivas</label><output id="out-pessoas" for="calc-pessoas">2 pessoas</output></div>
         <input type="range" id="calc-pessoas" min="1" max="20" step="1" value="2">
@@ -165,36 +183,39 @@
 <section id="como-funciona">
   <div class="container">
     <div class="sec-head reveal">
-      <p class="eyebrow">Como funciona</p>
-      <h2>Do primeiro clique ao orçamento, sem reunião</h2>
+      <p class="kicker">Como funciona</p>
+      <h2 class="grad">Do primeiro clique ao orçamento, sem reunião</h2>
     </div>
     <ol class="steps" data-stagger>
-      <li><span class="num" aria-hidden="true">1</span><span class="when">2 minutos</span><h3>8 perguntas rápidas</h3><p>Você conta aqui no site o que precisa. No fim, o WhatsApp abre com o resumo das suas respostas já escrito.</p></li>
-      <li><span class="num" aria-hidden="true">2</span><span class="when">Na hora</span><h3>Resumo no WhatsApp</h3><p>Suas respostas chegam direto para a gente. Você não precisa repetir nada.</p></li>
-      <li><span class="num" aria-hidden="true">3</span><span class="when">No mesmo dia</span><h3>Orçamento</h3><p>Você recebe o orçamento com escopo, valor e prazo direto no WhatsApp.</p></li>
-      <li><span class="num" aria-hidden="true">4</span><span class="when">7 dias</span><h3>Teste</h3><p>A primeira entrega roda na sua empresa. Se não fizer sentido, você não segue.</p></li>
+      <li><span class="num" aria-hidden="true">01</span><span class="when">2 minutos</span><h3>8 perguntas rápidas</h3><p>Você conta aqui no site o que precisa. No fim, o WhatsApp abre com o resumo das suas respostas já escrito.</p></li>
+      <li><span class="num" aria-hidden="true">02</span><span class="when">Na hora</span><h3>Resumo no WhatsApp</h3><p>Suas respostas chegam direto para a gente. Você não precisa repetir nada.</p></li>
+      <li><span class="num" aria-hidden="true">03</span><span class="when">No mesmo dia</span><h3>Orçamento</h3><p>Você recebe o orçamento com escopo, valor e prazo direto no WhatsApp.</p></li>
+      <li><span class="num" aria-hidden="true">04</span><span class="when">7 dias</span><h3>Teste</h3><p>A primeira entrega roda na sua empresa. Se não fizer sentido, você não segue.</p></li>
     </ol>
   </div>
 </section>
 
-<section class="teste sec-lime" id="teste">
+<section class="teste" id="teste">
   <div class="container">
-    <div class="seven reveal-big" aria-hidden="true">7<small>dias de teste</small></div>
+    <div class="reveal">
+      <div class="seven-stage"><div class="seven3d" id="seven3d" aria-hidden="true"></div></div>
+      <p class="seven-label">dias de teste</p>
+    </div>
     <div class="teste-copy reveal" style="--d:.15s">
-      <p class="eyebrow">Teste de 7 dias</p>
-      <h2>Você não precisa acreditar em promessa</h2>
-      <p>Em até 7 dias, a primeira entrega está rodando na sua empresa, com seus clientes e seus dados. Você acompanha cada avanço pelo WhatsApp. Se não fizer sentido, você não segue.</p>
+      <p class="kicker">Teste de 7 dias</p>
+      <h2 class="grad">Você não precisa acreditar em promessa</h2>
+      <p class="lead">Em até 7 dias, a primeira entrega está rodando na sua empresa, com seus clientes e seus dados. Você acompanha cada avanço pelo WhatsApp. Se não fizer sentido, você não segue.</p>
       <a class="btn btn-primary" href="#aplicar" data-aplicar>Quero testar na minha empresa <span class="arr" aria-hidden="true">→</span></a>
       <p class="fine">As condições do teste ficam escritas no contrato.</p>
     </div>
   </div>
 </section>
 
-<section class="sec-blue" id="fundadores">
+<section id="fundadores">
   <div class="container fund">
     <div class="fund-copy reveal">
-      <p class="eyebrow">Programa Clientes Fundadores</p>
-      <h2>Somos uma empresa nova. E não vamos fingir que não somos.</h2>
+      <p class="kicker">Programa Clientes Fundadores</p>
+      <h2 class="grad">Somos uma empresa nova. E não vamos fingir que não somos.</h2>
       <p class="lead">Por isso abrimos 5 vagas para os primeiros clientes. Você recebe uma condição especial de lançamento e, em troca, conta como foi trabalhar com a gente.</p>
       <ul>
         <li>Condição especial no primeiro projeto</li>
@@ -203,19 +224,19 @@
       </ul>
     </div>
     <div class="vagas reveal" style="--d:.15s">
-      <span class="eyebrow">Vagas restantes</span>
+      <span class="kicker">Vagas restantes</span>
       <span class="n"><span data-vagas>5</span> de 5</span>
       <div class="dots" aria-hidden="true"></div>
-      <a class="btn btn-lime" href="#aplicar" data-aplicar>Quero uma vaga <span class="arr" aria-hidden="true">→</span></a>
+      <a class="btn btn-primary" href="#aplicar" data-aplicar>Quero uma vaga <span class="arr" aria-hidden="true">→</span></a>
     </div>
   </div>
 </section>
 
-<section class="sec-paper" id="projetos">
+<section id="projetos">
   <div class="container">
     <div class="sec-head reveal">
-      <p class="eyebrow">Projetos</p>
-      <h2>O que construímos</h2>
+      <p class="kicker">Projetos</p>
+      <h2 class="grad">O que construímos</h2>
       <p class="lead">Projetos de demonstração para três tipos de negócio. Conte o que você precisa e montamos um igual para a sua empresa.</p>
     </div>
     <div class="proj" data-stagger>
@@ -224,11 +245,11 @@
         <span class="tag">Agente de IA</span><h3>Atendimento para clínica</h3><p>Responde pacientes, mostra horários livres e agenda consultas no WhatsApp, inclusive de madrugada.</p>
       </article>
       <article>
-        <div class="prev alt" aria-hidden="true"><span class="badge">Demonstração</span><div class="mk-kpi"><i></i><i></i><i></i></div><div class="mk-bars"><i style="height:40%"></i><i style="height:55%"></i><i style="height:48%"></i><i style="height:70%"></i><i style="height:62%"></i><i style="height:92%"></i></div></div>
+        <div class="prev" aria-hidden="true"><span class="badge">Demonstração</span><div class="mk-kpi"><i></i><i></i><i></i></div><div class="mk-bars"><i style="height:40%"></i><i style="height:55%"></i><i style="height:48%"></i><i style="height:70%"></i><i style="height:62%"></i><i style="height:92%"></i></div></div>
         <span class="tag">Sistema de gestão</span><h3>Painel para loja</h3><p>Vendas, estoque e financeiro num só painel, com alerta quando um produto está acabando.</p>
       </article>
       <article>
-        <div class="prev lime" aria-hidden="true"><span class="badge">Demonstração</span><div class="mk-h"></div><div class="mk-l"></div><div class="mk-l s"></div><div class="mk-btn"></div></div>
+        <div class="prev" aria-hidden="true"><span class="badge">Demonstração</span><div class="mk-h"></div><div class="mk-l"></div><div class="mk-l s"></div><div class="mk-btn"></div></div>
         <span class="tag">Landing page + automação</span><h3>Captação para escritório</h3><p>Página de campanha que leva o contato direto para o WhatsApp, com resposta automática em segundos.</p>
       </article>
     </div>
@@ -237,14 +258,14 @@
 
 <section id="perguntas">
   <div class="container">
-    <div class="sec-head reveal">
-      <p class="eyebrow">Perguntas frequentes</p>
-      <h2>O que todo mundo pergunta antes</h2>
+    <div class="sec-head center reveal">
+      <p class="kicker">Perguntas frequentes</p>
+      <h2 class="grad">O que todo mundo pergunta antes</h2>
     </div>
     <div class="faq reveal">
       <details><summary>Vocês já têm resultados com clientes?</summary><p>Somos uma empresa nova, por isso preferimos te mostrar funcionando. Você testa a primeira entrega por 7 dias na sua empresa antes de seguir.</p></details>
-      <details><summary>Quanto custa?</summary><p>De R$ 1 mil a R$ 50 mil, conforme o tipo e a quantidade de soluções. Sites e landing pages têm <a href="pacotes.html">pacotes com preço fechado</a>. Agentes, automações e sistemas são orçados pelo WhatsApp, no mesmo dia.</p></details>
-      <details><summary>Posso contratar mais de um serviço?</summary><p>Pode. Nas perguntas do orçamento você marca todos os serviços que quiser, e o orçamento já vem com tudo junto.</p></details>
+      <details><summary>Quanto custa?</summary><p>De R$ 1 mil a R$ 50 mil, conforme o tipo e a quantidade de soluções. Sites e landing pages têm <a href="pacotes.html">pacotes com preço fechado</a>. O resto é orçado pelo WhatsApp, no mesmo dia.</p></details>
+      <details><summary>Posso contratar mais de uma solução?</summary><p>Pode. Nas perguntas do orçamento você marca todas as soluções que quiser, e o orçamento já vem com tudo junto.</p></details>
       <details><summary>Funciona para o meu setor?</summary><p>Atendemos empresas de todos os setores. Se a sua equipe repete tarefas, responde as mesmas perguntas ou junta números em planilha, existe espaço para IA e automação.</p></details>
       <details><summary>Quanto tempo leva para ficar pronto?</summary><p>A primeira entrega roda em até 7 dias. Projetos maiores são divididos em fases, para você ver resultado desde a primeira semana.</p></details>
       <details><summary>O agente de IA fala como a minha empresa?</summary><p>Sim. Ele aprende seus produtos, preços, horários e o tom que vocês usam com os clientes. Quando não souber responder, passa a conversa para uma pessoa da sua equipe.</p></details>
@@ -253,15 +274,14 @@
   </div>
 </section>
 
-<section class="final sec-blue">
-  <div class="glow g1" aria-hidden="true"></div>
+<section class="final">
   <div class="container reveal">
-    <p class="eyebrow">Orçamento no mesmo dia</p>
-    <h2>Descubra onde sua empresa perde tempo e dinheiro</h2>
+    <p class="kicker">Orçamento no mesmo dia</p>
+    <h2 class="grad">Descubra onde sua empresa perde tempo e dinheiro</h2>
     <p class="lead">Responda 8 perguntas rápidas e receba o orçamento no WhatsApp. Sem reunião e sem compromisso.</p>
-    <div class="cta-row" style="justify-content:center">
-      <a class="btn btn-lime" href="#aplicar" data-aplicar>Quero meu orçamento <span class="arr" aria-hidden="true">→</span></a>
-      <a class="btn btn-light" href="#" data-wa="Olá! Vim pelo site da Zunkuft e quero saber mais.">Falar no WhatsApp</a>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="#aplicar" data-aplicar>Quero meu orçamento <span class="arr" aria-hidden="true">→</span></a>
+      <a class="btn btn-ghost" href="#" data-wa="Olá! Vim pelo site da Zunkuft e quero saber mais.">Falar no WhatsApp</a>
     </div>
   </div>
 </section>

@@ -4,7 +4,9 @@
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const finePointer = matchMedia("(hover: hover) and (pointer: fine)").matches;
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
   const store = {
     get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
@@ -36,16 +38,224 @@
     d.innerHTML = Array.from({ length: 5 }, (_, i) => `<i class="${i < vagas ? "on" : ""}" style="--i:${i}"></i>`).join("");
   });
 
-  /* Revelação ao rolar: cada bloco entra quando aparece na tela.
-     Em grupos com data-stagger, os filhos entram um depois do outro. */
+  /* ---------------------------------------------------------------
+     Fundo 3D do topo: fitas brilhantes em WebGL (um único shader).
+     Otimização: resolução reduzida, pausa fora da tela e com a aba
+     escondida, e qualidade que se ajusta sozinha se o aparelho sofrer.
+     --------------------------------------------------------------- */
+  const glState = { scroll: 0 };
+  (function fundo3D() {
+    const canvas = $("#gl");
+    if (!canvas) return;
+    const gl = canvas.getContext("webgl", { antialias: false, alpha: false, depth: false, stencil: false, powerPreference: "high-performance", premultipliedAlpha: false });
+    if (!gl) return; // sem WebGL fica o degradê do CSS
+
+    const VS = "attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}";
+    const FS = `
+#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
+precision mediump float;
+#endif
+uniform vec2 uRes;uniform float uTime;uniform vec2 uMouse;uniform float uScroll;uniform float uIntro;
+const vec3 C0=vec3(.008,.063,.141);
+const vec3 C1=vec3(.020,.149,.349);
+const vec3 C2=vec3(.329,.514,.702);
+const vec3 C3=vec3(.490,.627,.792);
+const vec3 C4=vec3(.757,.910,1.);
+float hash(vec2 p){return fract(sin(dot(p,vec2(12.9898,78.233)))*43758.5453);}
+void main(){
+  vec2 uv=(gl_FragCoord.xy-.5*uRes)/uRes.y;
+  float t=uTime;
+  vec3 col=C0;
+  col+=C1*.7*smoothstep(1.2,0.,length(uv-vec2(.45,.3)));
+  col+=C1*.35*smoothstep(1.,0.,length(uv-vec2(-.6,-.45)));
+  float zoom=mix(1.45,1.,uIntro)+uScroll*.45;
+  vec2 m=uMouse*.05;
+  for(int i=0;i<6;i++){
+    float fi=float(i);
+    float k=fi/5.;
+    float z=1.3-fi*.1;
+    vec2 p=uv*zoom*z+m*(.3+k*.9);
+    p=vec2(p.x*.9+p.y*.43,p.y*.9-p.x*.43);
+    float ph=fi*1.37;
+    float a1=.15+.05*sin(ph);
+    float f1=1.2+.22*fi;
+    float f2=2.6+.3*fi;
+    float g1=p.x*f1+t*(.32+.04*fi)+ph;
+    float g2=p.x*f2-t*.24+ph*2.1;
+    float y=a1*sin(g1)+.055*sin(g2)+(fi-2.5)*.085;
+    float sl=a1*f1*cos(g1)+.055*f2*cos(g2);
+    float inv=inversesqrt(1.+sl*sl);
+    float d=(p.y-y)*inv;
+    float w=.022+.016*sin(p.x*1.6+t*.45+ph)+.01*fi;
+    float s=d/w;
+    vec3 base=mix(C1,C2,k*.9);
+    if(abs(s)<1.){
+      float nz=sqrt(1.-s*s);
+      vec3 n=normalize(vec3(-sl*inv*s,inv*s,nz));
+      vec3 L=normalize(vec3(-.45,.7,.55));
+      float dif=max(dot(n,L),0.);
+      float sp=pow(max(dot(n,normalize(L+vec3(0.,0.,1.))),0.),42.);
+      float fr=pow(1.-nz,2.4);
+      vec3 rc=base*(.16+.95*dif)+C4*sp*(.5+.7*k)+C3*fr*.5;
+      float edge=smoothstep(1.,.82,abs(s));
+      col=mix(col,rc,edge*(.42+.58*k));
+    }
+    col+=C2*.045*exp(-abs(d)*20.)*(.35+k);
+  }
+  col*=1.-.5*dot(uv*.85,uv*.85);
+  col+=(hash(gl_FragCoord.xy+fract(t))-.5)*.014;
+  gl_FragColor=vec4(col*uIntro,1.);
+}`;
+    const sh = (type, src) => {
+      const s = gl.createShader(type);
+      gl.shaderSource(s, src);
+      gl.compileShader(s);
+      return gl.getShaderParameter(s, gl.COMPILE_STATUS) ? s : null;
+    };
+    const vs = sh(gl.VERTEX_SHADER, VS), fs = sh(gl.FRAGMENT_SHADER, FS);
+    if (!vs || !fs) return;
+    const prog = gl.createProgram();
+    gl.attachShader(prog, vs);
+    gl.attachShader(prog, fs);
+    gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return;
+    gl.useProgram(prog);
+    const buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    const loc = gl.getAttribLocation(prog, "p");
+    gl.enableVertexAttribArray(loc);
+    gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+    const U = {};
+    ["uRes", "uTime", "uMouse", "uScroll", "uIntro"].forEach((n) => { U[n] = gl.getUniformLocation(prog, n); });
+
+    const mobile = matchMedia("(max-width: 760px)").matches;
+    let escala = mobile ? 0.5 : 0.62;
+    const resize = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      const w = Math.max(1, Math.round(canvas.clientWidth * dpr * escala));
+      const h = Math.max(1, Math.round(canvas.clientHeight * dpr * escala));
+      if (canvas.width !== w || canvas.height !== h) {
+        canvas.width = w; canvas.height = h;
+        gl.viewport(0, 0, w, h);
+      }
+      gl.uniform2f(U.uRes, w, h);
+    };
+    resize();
+    let resizeT;
+    addEventListener("resize", () => { clearTimeout(resizeT); resizeT = setTimeout(resize, 150); }, { passive: true });
+
+    const mouse = { x: 0, y: 0, tx: 0, ty: 0 };
+    if (finePointer) {
+      addEventListener("pointermove", (e) => {
+        mouse.tx = (e.clientX / innerWidth - 0.5) * 2;
+        mouse.ty = (0.5 - e.clientY / innerHeight) * 2;
+      }, { passive: true });
+    }
+
+    const desenhar = (tempo, intro) => {
+      mouse.x += (mouse.tx - mouse.x) * 0.04;
+      mouse.y += (mouse.ty - mouse.y) * 0.04;
+      gl.uniform1f(U.uTime, tempo);
+      gl.uniform2f(U.uMouse, mouse.x, mouse.y);
+      gl.uniform1f(U.uScroll, glState.scroll);
+      gl.uniform1f(U.uIntro, intro);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+    };
+
+    if (reduce) { desenhar(8, 1); return; } // quadro parado, sem movimento
+
+    let visivel = true, rodando = false, raf = 0;
+    const t0 = performance.now();
+    let ultimo = t0, quadros = 0, somaDt = 0;
+    const loop = (agora) => {
+      if (!visivel || document.hidden) { rodando = false; return; }
+      const dt = agora - ultimo; ultimo = agora;
+      // Ajuste automático: se ficar abaixo de ~45 fps, reduz a resolução
+      if (quadros < 120) {
+        quadros++; somaDt += dt;
+        if (quadros === 120 && somaDt / 120 > 22 && escala > 0.3) { escala *= 0.72; resize(); quadros = 0; somaDt = 0; }
+      }
+      const s = (agora - t0) / 1000;
+      const k = clamp(s / 2.2, 0, 1);
+      desenhar(s, 1 - Math.pow(1 - k, 3));
+      raf = requestAnimationFrame(loop);
+    };
+    const ligar = () => {
+      if (rodando || !visivel || document.hidden) return;
+      rodando = true; ultimo = performance.now();
+      raf = requestAnimationFrame(loop);
+    };
+    new IntersectionObserver(([e]) => { visivel = e.isIntersecting; if (visivel) ligar(); }).observe(canvas);
+    document.addEventListener("visibilitychange", ligar);
+    ligar();
+  })();
+
+  /* Camadas do "7" em 3D: várias cópias em profundidade formam o volume */
+  const seven = $("#seven3d");
+  if (seven) {
+    const N = 14;
+    // Do fundo (#052659) até perto da frente (#5483B3); a face da frente usa o degradê do CSS
+    const de = [5, 38, 89], ate = [84, 131, 179];
+    seven.innerHTML = Array.from({ length: N }, (_, k) => {
+      const z = (k - (N - 1)) * 2.6;
+      if (k === N - 1) return `<span style="transform:translateZ(${z}px)">7</span>`;
+      const f = k / (N - 2);
+      const cor = de.map((c, j) => Math.round(c + (ate[j] - c) * f)).join(",");
+      return `<span style="transform:translateZ(${z}px);color:rgb(${cor})">7</span>`;
+    }).join("");
+  }
+
+  /* ---------------------------------------------------------------
+     Efeitos ligados à rolagem num único requestAnimationFrame:
+     topo sai com parallax, celular e "7" giram em 3D conforme rolam.
+     --------------------------------------------------------------- */
+  const heroInner = $(".hero-inner");
+  const stage = $("#stage"), phone = $("#phone3d");
+  const sevenStage = seven ? seven.parentElement : null;
+  const vistos = new Set();
+  if ("IntersectionObserver" in window) {
+    const ioVisto = new IntersectionObserver((es) => es.forEach((e) => (e.isIntersecting ? vistos.add(e.target) : vistos.delete(e.target))));
+    [heroInner, stage, sevenStage].forEach((el) => el && ioVisto.observe(el));
+  }
+  const progresso = (el) => {
+    const r = el.getBoundingClientRect();
+    return clamp((innerHeight - r.top) / (innerHeight + r.height), 0, 1);
+  };
+  let agendado = false;
+  const aplicarRolagem = () => {
+    agendado = false;
+    const y = scrollY, vh = innerHeight;
+    glState.scroll = clamp(y / vh, 0, 1);
+    if (reduce) return;
+    if (heroInner && y < vh * 1.3) {
+      const k = clamp(y / (vh * 0.75), 0, 1);
+      heroInner.style.transform = `translate3d(0,${y * 0.3}px,0) scale(${1 - k * 0.06})`;
+      heroInner.style.opacity = String(1 - k);
+    }
+    if (phone && vistos.has(stage)) {
+      const p = progresso(stage);
+      phone.style.transform = `rotateY(${-28 + p * 40}deg) rotateX(${16 - p * 22}deg) translateZ(${p * 40}px)`;
+    }
+    if (seven && vistos.has(sevenStage)) {
+      const p = progresso(sevenStage);
+      seven.style.transform = `rotateY(${-42 + p * 64}deg) rotateX(${12 - p * 18}deg)`;
+    }
+  };
+  addEventListener("scroll", () => { if (!agendado) { agendado = true; requestAnimationFrame(aplicarRolagem); } }, { passive: true });
+  aplicarRolagem();
+
+  /* Revelação ao rolar (sobe e se endireita em 3D) */
   $$("[data-stagger]").forEach((grupo) => {
     [...grupo.children].forEach((filho, i) => {
       filho.classList.add("reveal");
-      filho.style.setProperty("--d", `${i * 80}ms`);
+      filho.style.setProperty("--d", `${i * 90}ms`);
     });
   });
   const aoAparecer = new Map();
-  const alvos = $$(".reveal, .reveal-big, .steps, .vagas, .proj article, #calc");
+  const alvos = $$(".reveal, .steps, .vagas, .proj article, #calc");
   const mostrar = (el) => {
     el.classList.add("in");
     const fn = aoAparecer.get(el);
@@ -56,10 +266,32 @@
       for (const e of entradas) {
         if (e.isIntersecting) { mostrar(e.target); io.unobserve(e.target); }
       }
-    }, { rootMargin: "0px 0px -12% 0px", threshold: 0.15 });
+    }, { rootMargin: "0px 0px -10% 0px", threshold: 0.12 });
     alvos.forEach((el) => io.observe(el));
   } else {
     alvos.forEach(mostrar);
+  }
+
+  /* Cartões inclinam em 3D e a luz segue o mouse (só com mouse de verdade) */
+  if (finePointer && !reduce) {
+    $$("[data-tilt]").forEach((card) => {
+      let raf = 0, ev = null;
+      const pintar = () => {
+        raf = 0;
+        const r = card.getBoundingClientRect();
+        const px = (ev.clientX - r.left) / r.width, py = (ev.clientY - r.top) / r.height;
+        card.style.setProperty("--mx", `${px * 100}%`);
+        card.style.setProperty("--my", `${py * 100}%`);
+        card.style.transform = `perspective(1000px) rotateX(${(0.5 - py) * 8}deg) rotateY(${(px - 0.5) * 10}deg) translateZ(6px)`;
+      };
+      card.addEventListener("pointerenter", () => { card.style.transition = "transform .18s ease-out, background-color .3s ease, border-color .3s ease"; });
+      card.addEventListener("pointermove", (e) => { ev = e; if (!raf) raf = requestAnimationFrame(pintar); });
+      card.addEventListener("pointerleave", () => {
+        cancelAnimationFrame(raf); raf = 0;
+        card.style.transition = "transform .7s cubic-bezier(0.23,1,0.32,1), background-color .3s ease, border-color .3s ease";
+        card.style.transform = "";
+      });
+    });
   }
 
   /* Conversa de demonstração */
@@ -91,12 +323,12 @@
       MSGS.forEach((m) => chat.append(bubble(m)));
       chat.append(status());
     } else {
-      let visible = true;
+      let visible = false;
       new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(chat);
-      const waitVisible = async () => { while (!visible) await sleep(400); };
+      const waitVisible = async () => { while (!visible || document.hidden) await sleep(400); };
       (async function loop() {
-        await sleep(900);
         for (;;) {
+          await waitVisible();
           chat.replaceChildren();
           await sleep(500);
           for (const m of MSGS) {
@@ -121,7 +353,7 @@
     }
   }
 
-  /* Calculadora: o valor conta até o resultado em vez de trocar de uma vez */
+  /* Calculadora: o valor conta até o resultado */
   const calc = $("#calc");
   let custoMensal = 0;
   if (calc) {
@@ -132,7 +364,7 @@
     const contar = (alvo) => {
       cancelAnimationFrame(raf);
       if (reduce) { mostrado = alvo; pintar(alvo); return; }
-      const de = mostrado, t0 = performance.now(), dur = 650;
+      const de = mostrado, t0 = performance.now(), dur = 800;
       const passo = (t) => {
         const k = Math.min(1, (t - t0) / dur);
         mostrado = de + (alvo - de) * (1 - Math.pow(1 - k, 3));
@@ -141,8 +373,10 @@
       };
       raf = requestAnimationFrame(passo);
     };
+    const trilho = (el) => el.style.setProperty("--p", `${((el.value - el.min) / (el.max - el.min)) * 100}%`);
     const update = () => {
       const pessoas = +p.value, horas = +h.value, custo = +c.value;
+      [p, h, c].forEach(trilho);
       $("#out-pessoas").textContent = pessoas === 1 ? "1 pessoa" : `${pessoas} pessoas`;
       $("#out-horas").textContent = `${horas} h`;
       $("#out-custo").textContent = brl(custo);
@@ -151,15 +385,34 @@
     };
     [p, h, c].forEach((el) => el.addEventListener("input", update));
     update();
-    // Quando a calculadora aparece, o valor sobe do zero uma vez
     aoAparecer.set(calc, () => { ativo = true; mostrado = 0; contar(custoMensal); });
   }
 
-  /* Aplicação em etapas: no fim, leva para o WhatsApp com o resumo das respostas */
+  /* ---------------------------------------------------------------
+     Aplicação em etapas: no fim, abre o WhatsApp com o resumo
+     --------------------------------------------------------------- */
   const dlg = $("#aplicacao");
   if (!dlg) return;
   const form = $("form", dlg), body = $(".apl-body", dlg), bar = $(".bar i", dlg), count = $(".count", dlg);
   const back = $("[data-back]", dlg), next = $("[data-next]", dlg), foot = $(".apl-foot", dlg);
+
+  const SOLUCOES = [
+    "Agentes de Inteligência Artificial",
+    "Automação de Processos Empresariais",
+    "Sistemas de Gestão Inteligente",
+    "Desenvolvimento de Sites Institucionais",
+    "Criação de Landing Pages",
+    "Sistemas e Aplicações Web Personalizadas",
+    "Chatbots e Atendimento Inteligente",
+    "Integração entre Sistemas e APIs",
+    "Análise de Dados e Relatórios Inteligentes",
+    "Soluções de IA Personalizadas",
+    "E-commerce e Lojas Virtuais",
+    "Consultoria em Tecnologia e Inteligência Artificial",
+    "Desenvolvimento de Aplicativos",
+    "Modernização e Digitalização de Processos",
+    "Outra solução",
+  ];
 
   const STEPS = [
     { title: "Para começar, como falamos com você?", hint: "Leva 2 minutos. No fim, o WhatsApp abre com o resumo das suas respostas.",
@@ -174,8 +427,7 @@
         { name: "setor", label: "Setor (ex.: clínica, loja, indústria, escritório)", type: "text" },
       ] },
     { title: "Quantas pessoas trabalham na empresa?", name: "colaboradores", options: ["1 a 5", "6 a 20", "21 a 50", "51 a 200", "Mais de 200"] },
-    { title: "Do que você precisa?", hint: "Pode escolher mais de um.", name: "necessidade", multi: true, exclusivo: "Ainda não sei",
-      options: ["Agente de IA", "Automação de processos", "Sistema de gestão inteligente", "Site", "Landing page", "Outra solução com IA", "Ainda não sei"] },
+    { title: "Quais soluções sua empresa precisa?", hint: "Selecione uma ou mais opções", name: "necessidade", multi: true, numerar: true, options: SOLUCOES },
     { title: "Qual tarefa mais toma tempo da sua equipe hoje?", hint: "Uma ou duas frases já bastam.",
       fields: [{ name: "dor", label: "Ex.: responder clientes no WhatsApp, montar relatório, lançar pedidos", type: "textarea" }] },
     { title: "Se fizer sentido, quando quer começar?", name: "quando", options: ["Este mês", "Nos próximos 3 meses", "Só estou pesquisando"] },
@@ -232,7 +484,7 @@
 
     if (s.options) {
       const list = document.createElement("div");
-      list.className = "opts";
+      list.className = s.options.length > 8 ? "opts many" : "opts";
       list.setAttribute("role", "group");
       list.setAttribute("aria-labelledby", "apl-title");
       const marcado = (o) => (s.multi ? lista(a[s.name]).includes(o) : a[s.name] === o);
@@ -240,25 +492,29 @@
       contador.className = "sel-count";
       contador.setAttribute("aria-live", "polite");
       const atualizar = () => {
-        $$(".opt", list).forEach((x) => x.setAttribute("aria-pressed", marcado(x.textContent) ? "true" : "false"));
+        $$(".opt", list).forEach((x) => x.setAttribute("aria-pressed", marcado(x.dataset.v) ? "true" : "false"));
         if (s.multi) {
           const n = lista(a[s.name]).length;
-          contador.textContent = n === 0 ? "" : n === 1 ? "1 serviço escolhido" : `${n} serviços escolhidos`;
+          contador.textContent = n === 0 ? "" : n === 1 ? "1 solução selecionada" : `${n} soluções selecionadas`;
         }
       };
       s.options.forEach((o, k) => {
         const b = document.createElement("button");
         b.type = "button";
         b.className = s.multi ? "opt multi" : "opt";
+        b.dataset.v = o;
         b.style.setProperty("--i", k);
-        b.textContent = o;
+        if (s.numerar) {
+          const n = document.createElement("span"); n.className = "n"; n.textContent = String(k + 1).padStart(2, "0");
+          b.append(n);
+        }
+        const t = document.createElement("span"); t.className = "t"; t.textContent = o;
+        b.append(t);
         b.addEventListener("click", () => {
           if (s.multi) {
             let sel = lista(a[s.name]);
-            if (sel.includes(o)) sel = sel.filter((x) => x !== o);
-            else if (o === s.exclusivo) sel = [o];
-            else sel = sel.filter((x) => x !== s.exclusivo).concat(o);
-            a[s.name] = sel;
+            sel = sel.includes(o) ? sel.filter((x) => x !== o) : sel.concat(o);
+            a[s.name] = SOLUCOES.filter((x) => sel.includes(x)); // mantém a ordem da lista
             save();
             atualizar();
             $(".err", body).textContent = "";
@@ -311,7 +567,7 @@
     if (s.options) {
       if (s.multi) {
         if (lista(a[s.name]).length) return true;
-        err.textContent = "Escolha pelo menos um serviço.";
+        err.textContent = "Selecione pelo menos uma solução.";
         return false;
       }
       return !!a[s.name];
@@ -342,7 +598,6 @@
     foot.hidden = true;
 
     const nome = (a.nome || "").split(" ")[0];
-
     // Resumo das 8 respostas, que vai pronto para o WhatsApp da Zunkuft
     const linhas = [
       "Olá! Acabei de responder as perguntas no site da Zunkuft.",
@@ -388,6 +643,7 @@
   dlg.addEventListener("click", (e) => { if (e.target === dlg) dlg.close(); });
 
   const open = (extra) => {
+    if (a.necessidade) a.necessidade = lista(a.necessidade).filter((x) => SOLUCOES.includes(x)); // rascunho antigo
     Object.assign(a, extra || {});
     save();
     i = 0;
@@ -413,7 +669,7 @@
     } else {
       b.addEventListener("click", (e) => {
         e.preventDefault();
-        open({ necessidade: [key === "site" ? "Site" : "Landing page"], investimento: "Até R$ 3 mil" });
+        open({ necessidade: [key === "site" ? "Desenvolvimento de Sites Institucionais" : "Criação de Landing Pages"], investimento: "Até R$ 3 mil" });
       });
     }
   });
