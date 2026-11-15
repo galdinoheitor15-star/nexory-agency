@@ -598,9 +598,9 @@ void main(){
     foot.hidden = true;
 
     const nome = (a.nome || "").split(" ")[0];
-    // Resumo das 8 respostas, que vai pronto para o WhatsApp da Zunkuft
+    // Resumo das 8 respostas, que vai pronto para o WhatsApp da Zukunft
     const linhas = [
-      "Olá! Acabei de responder as perguntas no site da Zunkuft.",
+      "Olá! Acabei de responder as perguntas no site da Zukunft.",
       "",
       `*Nome:* ${a.nome || "-"}`,
       `*Cargo:* ${a.cargo || "-"}`,
@@ -621,7 +621,7 @@ void main(){
     h.textContent = `Pronto, ${nome}! Agora é só enviar.`;
     const p = document.createElement("p"); p.className = "muted";
     p.textContent = wa
-      ? "Vamos abrir o WhatsApp da Zunkuft com o resumo das suas respostas já escrito. Toque em enviar e o orçamento chega por lá."
+      ? "Vamos abrir o WhatsApp da Zukunft com o resumo das suas respostas já escrito. Toque em enviar e o orçamento chega por lá."
       : `Recebemos suas respostas. Vamos te chamar no WhatsApp ${a.whatsapp || ""} em instantes.`;
     box.append(h, p);
     if (wa) {
@@ -663,7 +663,7 @@ void main(){
     const key = b.dataset.comprar;
     const nomePacote = b.dataset.nome || key;
     const pay = C.pagamentos && C.pagamentos[key];
-    const wa = waLink(`Olá! Quero contratar o pacote ${nomePacote} da Zunkuft.`);
+    const wa = waLink(`Olá! Quero contratar o pacote ${nomePacote} da Zukunft.`);
     if (pay || wa) {
       b.href = pay || wa; b.target = "_blank"; b.rel = "noopener";
     } else {
