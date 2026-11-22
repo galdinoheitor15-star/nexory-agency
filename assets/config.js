@@ -1,4 +1,4 @@
-// Configuração do site da Zukunft. Edite só este arquivo.
+// Configuração do site da Nexory. Edite só este arquivo.
 window.ZK_CONFIG = {
   // WhatsApp comercial: DDI + DDD + número, só dígitos. Ex.: "5511987654321".
   // Vazio = os botões de WhatsApp ficam escondidos.

@@ -58,11 +58,11 @@ precision highp float;
 precision mediump float;
 #endif
 uniform vec2 uRes;uniform float uTime;uniform vec2 uMouse;uniform float uScroll;uniform float uIntro;
-const vec3 C0=vec3(.008,.063,.141);
-const vec3 C1=vec3(.020,.149,.349);
-const vec3 C2=vec3(.329,.514,.702);
-const vec3 C3=vec3(.490,.627,.792);
-const vec3 C4=vec3(.757,.910,1.);
+const vec3 C0=vec3(.063,.082,.133);
+const vec3 C1=vec3(.110,.161,.251);
+const vec3 C2=vec3(.157,.392,.941);
+const vec3 C3=vec3(.333,.722,1.);
+const vec3 C4=vec3(.957,.969,.988);
 float hash(vec2 p){return fract(sin(dot(p,vec2(12.9898,78.233)))*43758.5453);}
 void main(){
   vec2 uv=(gl_FragCoord.xy-.5*uRes)/uRes.y;
@@ -197,8 +197,8 @@ void main(){
   const seven = $("#seven3d");
   if (seven) {
     const N = 14;
-    // Do fundo (#052659) até perto da frente (#5483B3); a face da frente usa o degradê do CSS
-    const de = [5, 38, 89], ate = [84, 131, 179];
+    // Do Navy (#1C2940) até o Electric (#2864F0); a face da frente usa o degradê do CSS
+    const de = [28, 41, 64], ate = [40, 100, 240];
     seven.innerHTML = Array.from({ length: N }, (_, k) => {
       const z = (k - (N - 1)) * 2.6;
       if (k === N - 1) return `<span style="transform:translateZ(${z}px)">7</span>`;
@@ -598,9 +598,9 @@ void main(){
     foot.hidden = true;
 
     const nome = (a.nome || "").split(" ")[0];
-    // Resumo das 8 respostas, que vai pronto para o WhatsApp da Zukunft
+    // Resumo das 8 respostas, que vai pronto para o WhatsApp da Nexory
     const linhas = [
-      "Olá! Acabei de responder as perguntas no site da Zukunft.",
+      "Olá! Acabei de responder as perguntas no site da Nexory.",
       "",
       `*Nome:* ${a.nome || "-"}`,
       `*Cargo:* ${a.cargo || "-"}`,
@@ -621,7 +621,7 @@ void main(){
     h.textContent = `Pronto, ${nome}! Agora é só enviar.`;
     const p = document.createElement("p"); p.className = "muted";
     p.textContent = wa
-      ? "Vamos abrir o WhatsApp da Zukunft com o resumo das suas respostas já escrito. Toque em enviar e o orçamento chega por lá."
+      ? "Vamos abrir o WhatsApp da Nexory com o resumo das suas respostas já escrito. Toque em enviar e o orçamento chega por lá."
       : `Recebemos suas respostas. Vamos te chamar no WhatsApp ${a.whatsapp || ""} em instantes.`;
     box.append(h, p);
     if (wa) {
@@ -663,7 +663,7 @@ void main(){
     const key = b.dataset.comprar;
     const nomePacote = b.dataset.nome || key;
     const pay = C.pagamentos && C.pagamentos[key];
-    const wa = waLink(`Olá! Quero contratar o pacote ${nomePacote} da Zukunft.`);
+    const wa = waLink(`Olá! Quero contratar o pacote ${nomePacote} da Nexory.`);
     if (pay || wa) {
       b.href = pay || wa; b.target = "_blank"; b.rel = "noopener";
     } else {
