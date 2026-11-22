@@ -1,7 +1,7 @@
 # Site da Nexory Agency
 
 Site estático (HTML, CSS e JS puros). Não precisa de build.
-No ar em: https://galdinoheitor15-star.github.io/zunkuft-site/
+No ar em: https://galdinoheitor15-star.github.io/nexory-agency/
 
 ## Páginas
 - `index.html`: página principal. Os botões "Pedir orçamento" abrem as 8 perguntas por cima da página.
