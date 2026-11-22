@@ -294,6 +294,32 @@ void main(){
     });
   }
 
+  /* Demonstrações animadas dos projetos: só rodam enquanto estão na tela */
+  // Na demo da landing, o cursor mira o centro real do botão em qualquer tamanho de tela
+  const mirarCursor = () => $$(".dm-lp").forEach((card) => {
+    const cta = $(".dm-cta", card), cur = $(".dm-cursor", card), page = $(".dm-page", card);
+    if (!cta || !cur || !page || !card.clientWidth || !card.clientHeight) return;
+    // Posições de layout (offset*), que não sofrem com a inclinação 3D da entrada do cartão
+    const x = page.offsetLeft + cta.offsetLeft + cta.offsetWidth / 2 - 4;
+    const y = page.offsetTop + cta.offsetTop + cta.offsetHeight / 2 - 3;
+    cur.style.setProperty("--cx", `${(x / card.clientWidth) * 100}%`);
+    cur.style.setProperty("--cy", `${(y / card.clientHeight) * 100}%`);
+  });
+  mirarCursor();
+  if ("ResizeObserver" in window) {
+    const roMira = new ResizeObserver(() => mirarCursor());
+    $$(".dm-lp").forEach((card) => roMira.observe(card));
+  } else {
+    addEventListener("resize", mirarCursor, { passive: true });
+  }
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(mirarCursor);
+  if ("IntersectionObserver" in window) {
+    const ioDemo = new IntersectionObserver((es) => es.forEach((e) => e.target.classList.toggle("playing", e.isIntersecting)), { threshold: 0.25 });
+    $$(".dm").forEach((el) => ioDemo.observe(el));
+  } else {
+    $$(".dm").forEach((el) => el.classList.add("playing"));
+  }
+
   /* Conversa de demonstração */
   const chat = $("#chat");
   if (chat) {
